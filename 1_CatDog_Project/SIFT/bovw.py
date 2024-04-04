@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from sklearn.cluster import KMeans
-import faiss
+# import faiss
 
 #def build_codebook(descriptors, n_iterations=20, n_codewords=200):
 def build_codebook(descriptors, n_codewords=200):
@@ -23,22 +23,25 @@ def build_codebook(descriptors, n_codewords=200):
     verbose = True
     x = all_descriptors
     d = x.shape[1]
-    kmeans = faiss.Kmeans(d, ncentroids, niter=niter, verbose=verbose)
-    kmeans.train(x)
+    # kmeans = faiss.Kmeans(d, ncentroids, niter=niter, verbose=verbose)
+    # kmeans.train(x)
+
+    kmeans = KMeans(n_clusters=n_codewords, random_state=0).fit(all_descriptors)
     
     # 3. Return centroids
-#    return kmeans.cluster_centers_
-    return kmeans.centroids
+    return kmeans.cluster_centers_
+    # return kmeans.centroids
     
     
 def save_codebook(codebook, file_path):
     import joblib
 
     k = codebook.shape[0]
-    joblib.dump(codebook, "codebook_{}.pkl".format(k), compress=3)
+    joblib.dump(codebook, file_path, compress=3)
     
     
 def load_codebook(file_path):
+    import joblib
     codebook = joblib.load(file_path)
     return codebook
     
