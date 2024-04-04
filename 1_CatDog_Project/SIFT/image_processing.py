@@ -36,6 +36,7 @@ def extract_visual_features(gray_images):
 
 
 def visualize_keypoints(bgr_image, image_keypoints):
-    cv2.drawKeypoints(bgr_image, image_keypoints, 0, (255, 0, 0), flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-    return bgr_image.copy()
+    image = bgr_image.copy()
+    image = cv2.drawKeypoints(image, image_keypoints, 0, (0, 255, 0), flags=0)
+    return image
 
