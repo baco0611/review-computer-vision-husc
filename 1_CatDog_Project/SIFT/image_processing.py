@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import glob
 import os
+import random
 
 
 def load_images(image_dir):
@@ -40,3 +41,36 @@ def visualize_keypoints(bgr_image, image_keypoints):
     image = cv2.drawKeypoints(image, image_keypoints, 0, (0, 255, 0), flags=0)
     return image
 
+
+def split_dataset(dataset, train_ratio=0.7, valid_ratio=0.2, test_ratio=0.1):
+    """
+    Chia dataset thành ba phần train/validation/test theo tỷ lệ đã cho.
+    
+    Args:
+    - dataset: List chứa dữ liệu cần chia.
+    - train_ratio: Tỷ lệ phần train, mặc định là 0.7.
+    - valid_ratio: Tỷ lệ phần validation, mặc định là 0.2.
+    - test_ratio: Tỷ lệ phần test, mặc định là 0.1.
+    
+    Returns:
+    - train_set: List chứa phần train.
+    - valid_set: List chứa phần validation.
+    - test_set: List chứa phần test.
+    """
+    total_size = len(dataset)
+    train_size = int(total_size * train_ratio)
+    valid_size = int(total_size * valid_ratio)
+    test_size = total_size - train_size - valid_size
+    
+    # Đảm bảo tỷ lệ không bị làm tròn lên
+    assert train_size + valid_size + test_size == total_size
+    
+    # Xáo trộn dataset trước khi chia
+    random.shuffle(dataset)
+    
+    # Chia dataset thành các phần train/validation/test
+    train_set = dataset[:train_size]
+    valid_set = dataset[train_size:train_size+valid_size]
+    test_set = dataset[train_size+valid_size:]
+    
+    return train_set, valid_set, test_set
