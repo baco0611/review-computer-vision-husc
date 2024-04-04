@@ -4,6 +4,10 @@ import joblib
 import time
 from sklearn import svm
 from sklearn.metrics import accuracy_score
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
 
 # Start time counting
 start_time = time.time()
@@ -49,6 +53,19 @@ print("Validation Accuracy:", valid_accuracy)
 test_preds = model.predict(test_set)
 test_accuracy = accuracy_score(test_y, test_preds)
 print("Test Accuracy:", test_accuracy)
+
+dataset = train_set + valid_set +test_set
+data_preds = model.predict(dataset)
+data_y = np.concatenate((train_y, valid_y, test_y))
+conf_matrix = confusion_matrix(data_y, data_preds)
+plt.figure(figsize=(8, 6))
+sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", 
+            xticklabels=["Class 0", "Class 1"], yticklabels=["Class 0", "Class 1"])
+plt.xlabel('Predicted labels')
+plt.ylabel('True labels')
+plt.title('Confusion Matrix')
+plt.show()
+
 
 print("\nSaving model ...") 
 joblib.dump(model, "./data/SVM_model.joblib")
