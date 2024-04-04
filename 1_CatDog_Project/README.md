@@ -7,4 +7,7 @@ This is a project to classify dog and cat images using SIFT feature extraction. 
 - Run file load_data to load data and save data
 
 ### Step 2: Training codebook
-- Run fine training_codebook.py to train the codebook
+- Run file training_codebook.py to train the codebook
+
+### Step 3: Training model
+- Run file traning_model.py to training SVM model for cat-dog classification
