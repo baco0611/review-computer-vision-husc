@@ -26,7 +26,7 @@ def build_codebook(descriptors, n_codewords=200):
     # kmeans = faiss.Kmeans(d, ncentroids, niter=niter, verbose=verbose)
     # kmeans.train(x)
 
-    kmeans = KMeans(n_clusters=n_codewords, random_state=0).fit(all_descriptors)
+    kmeans = KMeans(n_clusters=n_codewords, random_state=0, n_init="auto").fit(all_descriptors)
     
     # 3. Return centroids
     return kmeans.cluster_centers_

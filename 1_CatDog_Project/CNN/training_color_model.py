@@ -7,6 +7,8 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten, Input
 from keras.layers import Conv2D, MaxPool2D
 import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
 import numpy as np
 
 # Start time counting
@@ -68,27 +70,54 @@ print("Define model ...")
 # model.add(Dense(units=2, activation="softmax"))
 
 #LeNet
-name_of_model = "LeNet"
+# name_of_model = "LeNet"
+# model = Sequential()
+# model.add(Input(shape=(224, 224, 3)))
+# model.add(Conv2D(filters=16, kernel_size=(3, 3), activation="relu", padding="same"))
+# model.add(MaxPool2D(pool_size=(2, 2)))
+
+# model.add(Conv2D(filters=32, kernel_size=(3, 3), activation="relu", padding="same"))
+# model.add(MaxPool2D(pool_size=(2, 2)))
+
+# model.add(Conv2D(filters=64, kernel_size=(3, 3), activation="relu", padding="same"))
+# model.add(MaxPool2D(pool_size=(2, 2)))
+
+# model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="same"))
+# model.add(MaxPool2D(pool_size=(2, 2)))
+
+# model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="same"))
+# model.add(MaxPool2D(pool_size=(2, 2)))
+
+# model.add(Flatten())
+# model.add(Dense(units=4096, activation="relu"))
+# model.add(Dense(units=1024, activation="relu"))
+# model.add(Dense(units=2, activation="softmax"))
+
+#VGG11
+name_of_model = "VGG11"
 model = Sequential()
 model.add(Input(shape=(224, 224, 3)))
-model.add(Conv2D(filters=16, kernel_size=(3, 3), activation="relu", padding="same"))
-model.add(MaxPool2D(pool_size=(2, 2)))
-
-model.add(Conv2D(filters=32, kernel_size=(3, 3), activation="relu", padding="same"))
-model.add(MaxPool2D(pool_size=(2, 2)))
-
 model.add(Conv2D(filters=64, kernel_size=(3, 3), activation="relu", padding="same"))
 model.add(MaxPool2D(pool_size=(2, 2)))
 
 model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="same"))
 model.add(MaxPool2D(pool_size=(2, 2)))
 
-model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="same"))
+model.add(Conv2D(filters=256, kernel_size=(3, 3), activation="relu", padding="same"))
+# model.add(Conv2D(filters=256, kernel_size=(3, 3), activation="relu", padding="same"))
+model.add(MaxPool2D(pool_size=(2, 2)))
+
+model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+# model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+model.add(MaxPool2D(pool_size=(2, 2)))
+
+model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+# model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
 model.add(MaxPool2D(pool_size=(2, 2)))
 
 model.add(Flatten())
 model.add(Dense(units=4096, activation="relu"))
-model.add(Dense(units=1024, activation="relu"))
+model.add(Dense(units=4096, activation="relu"))
 model.add(Dense(units=2, activation="softmax"))
 
 model.summary()
@@ -104,13 +133,13 @@ model.compile(loss='categorical_crossentropy', optimizer="adam", metrics=["accur
 
 print(len(train_x), len(train_y))
 
-H = model.fit(train_x, train_y, batch_size=64, epochs=20, verbose=1)
+num_of_epochs = 50
+H = model.fit(train_x, train_y, batch_size=64, epochs=num_of_epochs, verbose=1)
 
 print("Saving model ...")
 model.save("./data/" + name_of_model + "_CNN_model.h5")
 
 print("Loss and Accuracy ...")
-num_of_epochs = 20
 fig, axes = plt.subplots(2, 1, figsize=(10, 10))
 
 # Plot training loss
@@ -130,6 +159,42 @@ fig.savefig("./image/" + name_of_model + '_accuracy_loss_plot.png')
 
 score = model.evaluate(test_x, test_y, verbose=0)
 print(score)
+
+
+print("Evaluation ...")
+# Dự đoán nhãn cho cả tập huấn luyện và tập kiểm tra
+# train_predictions = model.predict(train_x)
+test_predictions = model.predict(test_x)
+
+# Chuyển đổi dự đoán từ dạng one-hot encoding sang nhãn đơn giản
+# train_predictions_labels = np.argmax(train_predictions, axis=1)
+test_predictions_labels = np.argmax(test_predictions, axis=1)
+# train_true_labels = np.argmax(train_y, axis=1)
+test_true_labels = np.argmax(test_y, axis=1)
+
+# Tính toán confusion matrix cho cả tập huấn luyện và tập kiểm tra
+# train_conf_matrix = confusion_matrix(train_true_labels, train_predictions_labels)
+test_conf_matrix = confusion_matrix(test_true_labels, test_predictions_labels)
+
+# Cộng confusion matrix của tập huấn luyện và tập kiểm tra lại với nhau
+# total_conf_matrix = train_conf_matrix + test_conf_matrix
+total_conf_matrix = test_conf_matrix
+
+# Tính toán confusion matrix
+conf_matrix = total_conf_matrix
+
+# Hiển thị confusion matrix bằng seaborn
+plt.figure(figsize=(8, 6))
+sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", 
+            xticklabels=["Class 0", "Class 1"], yticklabels=["Class 0", "Class 1"])
+plt.xlabel('Predicted labels')
+plt.ylabel('True labels')
+plt.title('Confusion Matrix (Total)')
+# Lưu hình ảnh
+plt.savefig("./image/" + name_of_model + "_confusion_matrix.png")
+# Hiển thị hình ảnh
+plt.show()
+
 
 # End and calculate time
 end_time = time.time()

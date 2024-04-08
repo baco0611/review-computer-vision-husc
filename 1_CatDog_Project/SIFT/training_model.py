@@ -64,6 +64,7 @@ sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
 plt.xlabel('Predicted labels')
 plt.ylabel('True labels')
 plt.title('Confusion Matrix')
+plt.savefig('./image/confusion_matrix.png')
 plt.show()
 
 
