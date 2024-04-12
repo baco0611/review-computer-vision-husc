@@ -9,8 +9,10 @@ start_time = time.time()
 print("Loading data ...")
 #Load files
 cat_dir = "../Cat1000"
+cat_dir = "../Cat_process"
 (cat_bgr, cat_gray) = load_images(cat_dir)
 dog_dir = "../Dog1000"
+dog_dir = "../Dog_process"
 (dog_bgr, dog_gray) = load_images(dog_dir)
 
 print("Saving data ...")
