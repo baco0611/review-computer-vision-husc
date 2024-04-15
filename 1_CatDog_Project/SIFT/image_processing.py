@@ -42,7 +42,7 @@ def visualize_keypoints(bgr_image, image_keypoints):
     return image
 
 
-def split_dataset(dataset, train_ratio=0.7, valid_ratio=0.2, test_ratio=0.1):
+def split_dataset(dataset, train_ratio=0.7, test_ratio=0.1):
     """
     Chia dataset thành ba phần train/validation/test theo tỷ lệ đã cho.
     
@@ -59,18 +59,19 @@ def split_dataset(dataset, train_ratio=0.7, valid_ratio=0.2, test_ratio=0.1):
     """
     total_size = len(dataset)
     train_size = int(total_size * train_ratio)
-    valid_size = int(total_size * valid_ratio)
-    test_size = total_size - train_size - valid_size
+    # valid_size = int(total_size * valid_ratio)
+    # test_size = total_size - train_size - valid_size
+    test_size = total_size - train_size
     
     # Đảm bảo tỷ lệ không bị làm tròn lên
-    assert train_size + valid_size + test_size == total_size
+    assert train_size + test_size == total_size
     
     # Xáo trộn dataset trước khi chia
     random.shuffle(dataset)
     
     # Chia dataset thành các phần train/validation/test
     train_set = dataset[:train_size]
-    valid_set = dataset[train_size:train_size+valid_size]
-    test_set = dataset[train_size+valid_size:]
+    # valid_set = dataset[train_size:train_size+valid_size]
+    test_set = dataset[train_size:]
     
-    return train_set, valid_set, test_set
+    return train_set, test_set

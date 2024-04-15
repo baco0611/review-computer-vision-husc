@@ -10,11 +10,11 @@ import cv2
 print("Loading image ...")
 cat_bgr = joblib.load("./data/cat_bgr.joblib")
 dog_bgr = joblib.load("./data/dog_bgr.joblib")
-image = dog_bgr[200]
+image = cat_bgr[200]
 image = cv2.resize(image, (224, 224))
 
 print("Loading model ...")
-model_name = "VGG11"
+model_name = "VGG11_full"
 model = load_model("./data/" + model_name + "_CNN_model.h5")
 print(model.summary())
 
@@ -83,7 +83,7 @@ for i, fmap in zip(blocks, features_map):
             plt.axis('off')  # Tắt trục nếu không có đủ feature map để điền vào ô trống
     
     # Lưu hình ảnh của block vào file
-    block_filename = "./image/{}_block{}.png".format(model_name, i)
+    block_filename = "./image/{}_block{}_full.png".format(model_name, i)
     plt.savefig(block_filename)
     plt.close(fig)
 

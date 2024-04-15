@@ -15,8 +15,8 @@ import numpy as np
 start_time = time.time()
 
 print("Loading data ...")
-cat_bgr = joblib.load('./data/cat_bgr.joblib')
-dog_bgr = joblib.load('./data/dog_bgr.joblib')
+cat_bgr = joblib.load('./data/cat_bgr_nonNeg.joblib')
+dog_bgr = joblib.load('./data/dog_bgr_nonNeg.joblib')
 
 print("Processing data ...")
 cat_train, cat_test = split_dataset(cat_bgr)
@@ -94,7 +94,7 @@ print("Define model ...")
 # model.add(Dense(units=2, activation="softmax"))
 
 #VGG11
-name_of_model = "VGG11"
+name_of_model = "VGG11_full_nonNeg"
 model = Sequential()
 model.add(Input(shape=(224, 224, 3)))
 model.add(Conv2D(filters=64, kernel_size=(3, 3), activation="relu", padding="same"))
@@ -104,15 +104,15 @@ model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="sa
 model.add(MaxPool2D(pool_size=(2, 2)))
 
 model.add(Conv2D(filters=256, kernel_size=(3, 3), activation="relu", padding="same"))
-# model.add(Conv2D(filters=256, kernel_size=(3, 3), activation="relu", padding="same"))
+model.add(Conv2D(filters=256, kernel_size=(3, 3), activation="relu", padding="same"))
 model.add(MaxPool2D(pool_size=(2, 2)))
 
 model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
-# model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
 model.add(MaxPool2D(pool_size=(2, 2)))
 
 model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
-# model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
 model.add(MaxPool2D(pool_size=(2, 2)))
 
 model.add(Flatten())
