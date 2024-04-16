@@ -56,6 +56,18 @@ print("\nAccuracy of Valid set and Test set")
 test_preds = model.predict(test_set)
 test_accuracy = accuracy_score(test_y, test_preds)
 print("Test Accuracy:", test_accuracy)
+# Tính toán confusion matrix
+conf_matrix = confusion_matrix(test_y, test_preds)
+
+# Vẽ confusion matrix
+plt.figure(figsize=(10, 8))
+sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
+            xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"])
+plt.xlabel('Predicted labels')
+plt.ylabel('True labels')
+plt.title('Confusion Matrix')
+plt.savefig('./image/confusion_test_matrix.png')
+plt.show()
 
 # dataset = train_set + valid_set +test_set
 dataset = train_set + test_set

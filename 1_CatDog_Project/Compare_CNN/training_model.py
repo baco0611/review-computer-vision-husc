@@ -51,26 +51,54 @@ def build_vgg11_model(input_shape=(224, 224, 3), num_classes=2):
     # Khởi tạo mô hình và thêm các lớp giống như trong đoạn code ban đầu của bạn
 
     #Lenet8 lớp
+    # model = Sequential()
+    # model.add(Input(shape=(224, 224, 3)))
+    # model.add(Conv2D(filters=16, kernel_size=(3, 3), activation="relu", padding="same"))
+    # model.add(MaxPool2D(pool_size=(2, 2)))
+
+    # model.add(Conv2D(filters=32, kernel_size=(3, 3), activation="relu", padding="same"))
+    # model.add(MaxPool2D(pool_size=(2, 2)))
+
+    # model.add(Conv2D(filters=64, kernel_size=(3, 3), activation="relu", padding="same"))
+    # model.add(MaxPool2D(pool_size=(2, 2)))
+
+    # model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="same"))
+    # model.add(MaxPool2D(pool_size=(2, 2)))
+
+    # model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="same"))
+    # model.add(MaxPool2D(pool_size=(2, 2)))
+
+    # model.add(Flatten())
+    # model.add(Dense(units=4096, activation="relu"))
+    # model.add(Dropout(0.2))
+    # model.add(Dense(units=1024, activation="relu"))
+    # model.add(Dropout(0.2))
+    # model.add(Dense(units=2, activation="softmax"))
+
+
     model = Sequential()
     model.add(Input(shape=(224, 224, 3)))
-    model.add(Conv2D(filters=16, kernel_size=(3, 3), activation="relu", padding="same"))
-    model.add(MaxPool2D(pool_size=(2, 2)))
-
-    model.add(Conv2D(filters=32, kernel_size=(3, 3), activation="relu", padding="same"))
-    model.add(MaxPool2D(pool_size=(2, 2)))
-
     model.add(Conv2D(filters=64, kernel_size=(3, 3), activation="relu", padding="same"))
     model.add(MaxPool2D(pool_size=(2, 2)))
 
     model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="same"))
     model.add(MaxPool2D(pool_size=(2, 2)))
 
-    model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(Conv2D(filters=256, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(Conv2D(filters=256, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(MaxPool2D(pool_size=(2, 2)))
+
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(MaxPool2D(pool_size=(2, 2)))
+
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
     model.add(MaxPool2D(pool_size=(2, 2)))
 
     model.add(Flatten())
     model.add(Dense(units=4096, activation="relu"))
-    model.add(Dense(units=1024, activation="relu"))
+    model.add(Dense(units=4096, activation="relu"))
     model.add(Dense(units=2, activation="softmax"))
 
     return model
@@ -192,12 +220,12 @@ dog_folders = [
 # train_x, test_x, train_y, test_y = process_data([(cat_regular_x, cat_regular_y), (dog_regular_x, dog_regular_y)])
 # train_and_save_model(train_x, train_y, test_x, test_y, "VGG11_CatDog_Full", epochs=30)
 
-cat_regular_x, cat_regular_y = mix_data([cat_folders[4]], 0)
-dog_regular_x, dog_regular_y = mix_data([dog_folders[4]], 1)
+cat_regular_x, cat_regular_y = mix_data([cat_folders[0]], 0)
+dog_regular_x, dog_regular_y = mix_data([dog_folders[0]], 1)
 
 train_x, test_x, train_y, test_y = process_data([(cat_regular_x, cat_regular_y), (dog_regular_x, dog_regular_y)])
-train_and_save_model(train_x, train_y, test_x, test_y, "VGG11_CatDog_Process", epochs=30)
-model = load_model("./data/VGG11_CatDog_Process_CNN_model.h5")
+# train_and_save_model(train_x, train_y, test_x, test_y, "VGG11", epochs=30)
+model = load_model("./data/VGG11_CNN_model.h5")
 
 all_data = []
 all_data.extend(train_x)
@@ -229,5 +257,5 @@ sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
 plt.xlabel('Predicted labels')
 plt.ylabel('True labels')
 plt.title('Confusion Matrix')
-plt.savefig("./img/VGG11_confuse_matrix_full.png")
+plt.savefig("./img/VGG11.png")
 plt.show()
