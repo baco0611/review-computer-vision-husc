@@ -22,17 +22,11 @@ def process_data(cases):
         data.extend(resize_list_image(images))
         labels.extend(label)
 
-    # data = cases[0][0] + cases[1][0]
-    # labels = cases[0][1] + cases[1][1]
-
     print(type(data))
     print(len(labels))
 
     data = np.array(data)
     labels = to_categorical(labels, num_classes=2)
-    
-    # Thực hiện chuẩn hóa dữ liệu ở đây nếu cần
-    # Ví dụ: data = data.astype('float32') / 255.0
     
     return train_test_split(data, labels, test_size=0.3, random_state=42)
 
@@ -48,59 +42,62 @@ def mix_data(folders, label):
 
 # Hàm xây dựng mô hình VGG11
 def build_vgg11_model(input_shape=(224, 224, 3), num_classes=2):
-    # Khởi tạo mô hình và thêm các lớp giống như trong đoạn code ban đầu của bạn
 
-    #Lenet8 lớp
-    # model = Sequential()
-    # model.add(Input(shape=(224, 224, 3)))
-    # model.add(Conv2D(filters=16, kernel_size=(3, 3), activation="relu", padding="same"))
-    # model.add(MaxPool2D(pool_size=(2, 2)))
-
-    # model.add(Conv2D(filters=32, kernel_size=(3, 3), activation="relu", padding="same"))
-    # model.add(MaxPool2D(pool_size=(2, 2)))
-
-    # model.add(Conv2D(filters=64, kernel_size=(3, 3), activation="relu", padding="same"))
-    # model.add(MaxPool2D(pool_size=(2, 2)))
-
-    # model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="same"))
-    # model.add(MaxPool2D(pool_size=(2, 2)))
-
-    # model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="same"))
-    # model.add(MaxPool2D(pool_size=(2, 2)))
-
-    # model.add(Flatten())
-    # model.add(Dense(units=4096, activation="relu"))
-    # model.add(Dropout(0.2))
-    # model.add(Dense(units=1024, activation="relu"))
-    # model.add(Dropout(0.2))
-    # model.add(Dense(units=2, activation="softmax"))
-
-
+    #VGG8
     model = Sequential()
     model.add(Input(shape=(224, 224, 3)))
+    model.add(Conv2D(filters=16, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(MaxPool2D(pool_size=(2, 2)))
+
+    model.add(Conv2D(filters=32, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(MaxPool2D(pool_size=(2, 2)))
+
     model.add(Conv2D(filters=64, kernel_size=(3, 3), activation="relu", padding="same"))
     model.add(MaxPool2D(pool_size=(2, 2)))
 
     model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="same"))
     model.add(MaxPool2D(pool_size=(2, 2)))
 
-    model.add(Conv2D(filters=256, kernel_size=(3, 3), activation="relu", padding="same"))
-    model.add(Conv2D(filters=256, kernel_size=(3, 3), activation="relu", padding="same"))
-    model.add(MaxPool2D(pool_size=(2, 2)))
-
-    model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
-    model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
-    model.add(MaxPool2D(pool_size=(2, 2)))
-
-    model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
-    model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="same"))
     model.add(MaxPool2D(pool_size=(2, 2)))
 
     model.add(Flatten())
     model.add(Dense(units=4096, activation="relu"))
-    model.add(Dense(units=4096, activation="relu"))
+    model.add(Dropout(0.2))
+    model.add(Dense(units=1024, activation="relu"))
+    model.add(Dropout(0.2))
     model.add(Dense(units=2, activation="softmax"))
 
+
+    #VGG11
+    # model = Sequential()
+    # model.add(Input(shape=(224, 224, 3)))
+    # model.add(Conv2D(filters=64, kernel_size=(3, 3), activation="relu", padding="same"))
+    # model.add(MaxPool2D(pool_size=(2, 2)))
+
+    # model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="same"))
+    # model.add(MaxPool2D(pool_size=(2, 2)))
+
+    # model.add(Conv2D(filters=256, kernel_size=(3, 3), activation="relu", padding="same"))
+    # model.add(Conv2D(filters=256, kernel_size=(3, 3), activation="relu", padding="same"))
+    # model.add(MaxPool2D(pool_size=(2, 2)))
+
+    # model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+    # model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+    # model.add(MaxPool2D(pool_size=(2, 2)))
+
+    # model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+    # model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+    # model.add(MaxPool2D(pool_size=(2, 2)))
+
+    # model.add(Flatten())
+    # model.add(Dense(units=4096, activation="relu"))
+    # model.add(Dropout(0.2))
+    # model.add(Dense(units=4096, activation="relu"))
+    # model.add(Dropout(0.2))
+    # model.add(Dense(units=2, activation="softmax"))
+
+    model.summary()
     return model
 
 def train_and_save_model(train_x, train_y, test_x, test_y, model_name, epochs=30):
@@ -108,23 +105,16 @@ def train_and_save_model(train_x, train_y, test_x, test_y, model_name, epochs=30
     model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=["accuracy"])
     history = model.fit(train_x, train_y, batch_size=64, epochs=epochs)
     
-    # Lưu mô hình
     model.save(f"./data/{model_name}_CNN_model.h5")
     
-    # Quá trình huấn luyện có thể được vẽ đồ thị loss và accuracy ở đây
-
-    # Vẽ đồ thị loss và accuracy
     plot_history(history, model_name)
     
-    # Đánh giá mô hình và vẽ confusion matrix
     evaluate_and_confusion_matrix(model, test_x, test_y, model_name)
 
 
-# Hàm vẽ đồ thị loss và accuracy
 def plot_history(history, model_name):
     plt.figure(figsize=(12, 6))
     
-    # Vẽ đồ thị loss
     plt.subplot(1, 2, 1)
     plt.plot(history.history['loss'], label='Loss', color='blue')
     plt.title('Training Loss')
@@ -132,15 +122,12 @@ def plot_history(history, model_name):
     plt.ylabel('Loss')
     plt.legend()
     
-    # Vẽ đồ thị accuracy
     plt.subplot(1, 2, 2)
     plt.plot(history.history['accuracy'], label='Accuracy', color='red')
     plt.title('Training Accuracy')
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
     plt.legend()
-    
-    # Lưu hình ảnh
     plt.savefig(f"./img/{model_name}_loss_accuracy_plot.png")
     plt.close()
 
@@ -158,8 +145,6 @@ def evaluate_and_confusion_matrix(model, test_x, test_y, model_name):
     plt.xlabel('Predicted labels')
     plt.ylabel('True labels')
     plt.title('Confusion Matrix')
-    
-    # Lưu hình ảnh
     plt.savefig(f"./img/{model_name}_confusion_matrix.png")
     plt.close()
     
@@ -178,54 +163,18 @@ dog_folders = [
     "./data/dog_process.joblib",
 ]
 
-# cat_regular_x, cat_regular_y = mix_data([cat_folders[0]], 0)
-# dog_regular_x, dog_regular_y = mix_data([dog_folders[0]], 1)
-
-# train_x, test_x, train_y, test_y = process_data([(cat_regular_x, cat_regular_y), (dog_regular_x, dog_regular_y)])
-# train_and_save_model(train_x, train_y, test_x, test_y, "VGG11_CatDog_Regular", epochs=30)
-
-# cat_regular_x, cat_regular_y = mix_data([cat_folders[0], cat_folders[1]], 0)
-# dog_regular_x, dog_regular_y = mix_data([dog_folders[0], dog_folders[1]], 1)
-
-# train_x, test_x, train_y, test_y = process_data([(cat_regular_x, cat_regular_y), (dog_regular_x, dog_regular_y)])
-# train_and_save_model(train_x, train_y, test_x, test_y, "VGG11_CatDog_Neg", epochs=30)
-
-# cat_regular_x, cat_regular_y = mix_data([cat_folders[0], cat_folders[2]], 0)
-# dog_regular_x, dog_regular_y = mix_data([dog_folders[0], dog_folders[2]], 1)
-
-# train_x, test_x, train_y, test_y = process_data([(cat_regular_x, cat_regular_y), (dog_regular_x, dog_regular_y)])
-# train_and_save_model(train_x, train_y, test_x, test_y, "VGG11_CatDog_Rez", epochs=30)
-
-# cat_regular_x, cat_regular_y = mix_data([cat_folders[0], cat_folders[3]], 0)
-# dog_regular_x, dog_regular_y = mix_data([dog_folders[0], dog_folders[3]], 1)
-
-# train_x, test_x, train_y, test_y = process_data([(cat_regular_x, cat_regular_y), (dog_regular_x, dog_regular_y)])
-# train_and_save_model(train_x, train_y, test_x, test_y, "VGG11_CatDog_Rot", epochs=30)
-
-# cat_regular_x, cat_regular_y = mix_data([cat_folders[0], cat_folders[1], cat_folders[2]], 0)
-# dog_regular_x, dog_regular_y = mix_data([dog_folders[0], dog_folders[1], dog_folders[2]], 1)
-
-# train_x, test_x, train_y, test_y = process_data([(cat_regular_x, cat_regular_y), (dog_regular_x, dog_regular_y)])
-# train_and_save_model(train_x, train_y, test_x, test_y, "VGG11_CatDog_NegRez", epochs=30)
-
-# cat_regular_x, cat_regular_y = mix_data([cat_folders[0], cat_folders[1], cat_folders[3]], 0)
-# dog_regular_x, dog_regular_y = mix_data([dog_folders[0], dog_folders[1], dog_folders[3]], 1)
-
-# train_x, test_x, train_y, test_y = process_data([(cat_regular_x, cat_regular_y), (dog_regular_x, dog_regular_y)])
-# train_and_save_model(train_x, train_y, test_x, test_y, "VGG11_CatDog_NegRot", epochs=30)
-
-# cat_regular_x, cat_regular_y = mix_data([cat_folders[0], cat_folders[1], cat_folders[3], cat_folders[2]], 0)
-# dog_regular_x, dog_regular_y = mix_data([dog_folders[0], dog_folders[1], dog_folders[3], dog_folders[2]], 1)
-
-# train_x, test_x, train_y, test_y = process_data([(cat_regular_x, cat_regular_y), (dog_regular_x, dog_regular_y)])
-# train_and_save_model(train_x, train_y, test_x, test_y, "VGG11_CatDog_Full", epochs=30)
-
+# Lấy dữ liệu mong muốn
+# Hàm mix_data với hai tham số ([array of dataset], label)
 cat_regular_x, cat_regular_y = mix_data([cat_folders[0]], 0)
 dog_regular_x, dog_regular_y = mix_data([dog_folders[0]], 1)
 
 train_x, test_x, train_y, test_y = process_data([(cat_regular_x, cat_regular_y), (dog_regular_x, dog_regular_y)])
-# train_and_save_model(train_x, train_y, test_x, test_y, "VGG11", epochs=30)
-model = load_model("./data/VGG11_CNN_model.h5")
+print(len(train_x), len(test_x))
+
+model_name = "VGG8"
+num_of_epoch = 30
+train_and_save_model(train_x, train_y, test_x, test_y, model_name, epochs=num_of_epoch)
+model = load_model("./data/" + model_name + "_CNN_model.h5")
 
 all_data = []
 all_data.extend(train_x)
@@ -257,5 +206,5 @@ sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
 plt.xlabel('Predicted labels')
 plt.ylabel('True labels')
 plt.title('Confusion Matrix')
-plt.savefig("./img/VGG11.png")
+plt.savefig("./img/" + model_name + ".png")
 plt.show()

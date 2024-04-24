@@ -10,19 +10,23 @@ cat_dir = "../image/Cat1000"
 cat_neg_dir = "../image/CatNeg"
 cat_resize_dir = "../image/CatResize"
 cat_rotate_dir = "../image/CatRotate"
+cat_flip_dir = "../image/CatFlip"
 (cat_bgr, _) = load_images(cat_dir)
 (cat_neg_bgr, _) = load_images(cat_neg_dir)
 (cat_resize_bgr, _) = load_images(cat_resize_dir)
 (cat_rotate_bgr, _) = load_images(cat_rotate_dir)
+(cat_flip_bgr, _) = load_images(cat_flip_dir)
 
 dog_dir = "../image/Dog1000"
 dog_neg_dir = "../image/DogNeg"
 dog_resize_dir = "../image/DogResize"
 dog_rotate_dir = "../image/DogRotate"
+dog_flip_dir = "../image/DogFlip"
 (dog_bgr, _) = load_images(dog_dir)
 (dog_neg_bgr, _) = load_images(dog_neg_dir)
 (dog_resize_bgr, _) = load_images(dog_resize_dir)
 (dog_rotate_bgr, _) = load_images(dog_rotate_dir)
+(dog_flip_bgr, _) = load_images(dog_flip_dir)
 
 cat_process_dir = "../Cat_process"
 dog_process_dir = "../Dog_process"
@@ -35,12 +39,16 @@ joblib.dump(cat_neg_bgr, "./data/cat_neg.joblib")
 joblib.dump(cat_resize_bgr, "./data/cat_resize.joblib")
 joblib.dump(cat_rotate_bgr, "./data/cat_rotate.joblib")
 joblib.dump(cat_process, "./data/cat_process.joblib")
+joblib.dump(cat_flip_bgr, "./data/cat_flip.joblib")
+
 
 joblib.dump(dog_bgr, "./data/dog_regular.joblib")
 joblib.dump(dog_neg_bgr, "./data/dog_neg.joblib")
 joblib.dump(dog_resize_bgr, "./data/dog_resize.joblib")
 joblib.dump(dog_rotate_bgr, "./data/dog_rotate.joblib")
 joblib.dump(dog_process, "./data/dog_process.joblib")
+joblib.dump(dog_flip_bgr, "./data/dog_flip.joblib")
+
 
 # End and calculate time
 end_time = time.time()
