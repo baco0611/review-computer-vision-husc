@@ -165,13 +165,13 @@ dog_folders = [
 
 # Lấy dữ liệu mong muốn
 # Hàm mix_data với hai tham số ([array of dataset], label)
-cat_regular_x, cat_regular_y = mix_data([cat_folders[0]], 0)
-dog_regular_x, dog_regular_y = mix_data([dog_folders[0]], 1)
+cat_regular_x, cat_regular_y = mix_data([cat_folders[4]], 0)
+dog_regular_x, dog_regular_y = mix_data([dog_folders[4]], 1)
 
 train_x, test_x, train_y, test_y = process_data([(cat_regular_x, cat_regular_y), (dog_regular_x, dog_regular_y)])
 print(len(train_x), len(test_x))
 
-model_name = "VGG8"
+model_name = "20240425_VGG8_Full_2"
 num_of_epoch = 30
 train_and_save_model(train_x, train_y, test_x, test_y, model_name, epochs=num_of_epoch)
 model = load_model("./data/" + model_name + "_CNN_model.h5")

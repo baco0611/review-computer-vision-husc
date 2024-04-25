@@ -13,8 +13,6 @@ import seaborn as sns
 from Processing_function import resize_list_image
 
 
-model = load_model("./data/VGG11_CatDog_Full_CNN_model.h5")
-
 # Hàm tải dữ liệu
 def load_data_from_folder(folder_path):
     return joblib.load(folder_path)
@@ -80,7 +78,10 @@ dog_folders = [
     "./data/dog_process.joblib",
 ]
 
-name = "flip"
+model_name = "VGG11_CatDog_Full"
+model = load_model("./data/" + model_name +"_CNN_model.h5")
+
+name = model_name + "_flip"
 cat_regular_x, cat_regular_y = mix_data([cat_folders[4]], 0)
 dog_regular_x, dog_regular_y = mix_data([dog_folders[4]], 1)
 
