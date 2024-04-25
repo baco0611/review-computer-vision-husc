@@ -56,6 +56,8 @@ def train_and_save_model(train_x, train_y, test_x, test_y, model_name):
 
     evaluate_and_confusion_matrix(model, test_x, test_y, model_name)
 
+    return model
+
 # Hàm đánh giá mô hình và vẽ confusion matrix
 def evaluate_and_confusion_matrix(model, test_x, test_y, model_name):
     test_predictions = model.predict(test_x)
@@ -72,28 +74,56 @@ def evaluate_and_confusion_matrix(model, test_x, test_y, model_name):
     plt.savefig(f"./img/{model_name}_confusion_matrix.png")
     plt.close()
 
+
+# data_folder = "extracted_4096dims_data"
+data_folder = "extracted_1024dims_data"
 cat_folders = [
-    "./data/extract_data/cat_regular_features.joblib",
-    "./data/extract_data/cat_neg_features.joblib",
-    "./data/extract_data/cat_resize_features.joblib",
-    "./data/extract_data/cat_rotate_features.joblib",
-    "./data/extract_data/cat_process_features.joblib",
+    f"./data/{data_folder}/cat_regular_features.joblib",
+    f"./data/{data_folder}/cat_neg_features.joblib",
+    f"./data/{data_folder}/cat_resize_features.joblib",
+    f"./data/{data_folder}/cat_rotate_features.joblib",
+    f"./data/{data_folder}/cat_process_features.joblib",
 ]
 dog_folders = [
-    "./data/extract_data/dog_regular_features.joblib",
-    "./data/extract_data/dog_neg_features.joblib",
-    "./data/extract_data/dog_resize_features.joblib",
-    "./data/extract_data/dog_rotate_features.joblib",
-    "./data/extract_data/dog_process_features.joblib",
+    f"./data/{data_folder}/dog_regular_features.joblib",
+    f"./data/{data_folder}/dog_neg_features.joblib",
+    f"./data/{data_folder}/dog_resize_features.joblib",
+    f"./data/{data_folder}/dog_rotate_features.joblib",
+    f"./data/{data_folder}/dog_process_features.joblib",
 ]
 
 #Lấy dữ liệu mong muốn
 # Hàm mix_data với hai tham số ([array of dataset], label)
-dog_regular_x, dog_regular_y = mix_data([dog_folders[0]], 1)
-cat_regular_x, cat_regular_y = mix_data([cat_folders[0]], 0)
+dog_regular_x, dog_regular_y = mix_data([dog_folders[4]], 1)
+cat_regular_x, cat_regular_y = mix_data([cat_folders[4]], 0)
 
 train_x, test_x, train_y, test_y = process_data([(cat_regular_x, cat_regular_y), (dog_regular_x, dog_regular_y)])
 print(len(train_x), len(test_x))
 
-model_name = "20240425_SVM_1995"
-train_and_save_model(train_x, train_y, test_x, test_y, model_name)
+model_name = "20240425_SVM_1024_Full"
+model = train_and_save_model(train_x, train_y, test_x, test_y, model_name)
+
+all_data = []
+all_data.extend(train_x)
+all_data.extend(test_x)
+all_data = np.array(all_data)
+
+all_labels = []
+all_labels.extend(train_y)
+all_labels.extend(test_y)
+all_labels = np.array(all_labels)
+
+print(type(all_data), len(all_data))
+print(type(all_labels), len(all_labels))
+
+predictions = model.predict(all_data)
+conf_matrix = confusion_matrix(all_labels, predictions)
+    
+plt.figure(figsize=(8, 6))
+sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
+            xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"])
+plt.xlabel('Predicted labels')
+plt.ylabel('True labels')
+plt.title('Confusion Matrix')
+plt.savefig(f"./img/{model_name}.png")
+plt.close()

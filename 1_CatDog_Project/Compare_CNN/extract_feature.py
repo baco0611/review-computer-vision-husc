@@ -61,7 +61,7 @@ dog_folders = [
     "./data/dog_process.joblib",
 ]
 
-output_dir = './data/extract_data'
+output_dir = './data/extracted_1024dims_data'
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
