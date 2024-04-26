@@ -43,7 +43,7 @@ def extract_feature(folders):
 
     return features_vectors
 
-model_name = "20240425_VGG8_1995_1"
+model_name = "20240425_VGG8_Full_1"
 model = define_extract_model(model_name)
 
 cat_folders = [
@@ -52,6 +52,7 @@ cat_folders = [
     "./data/cat_resize.joblib",
     "./data/cat_rotate.joblib",
     "./data/cat_process.joblib",
+    "./data/cat_flip.joblib",
 ]
 dog_folders = [
     "./data/dog_regular.joblib",
@@ -59,9 +60,11 @@ dog_folders = [
     "./data/dog_resize.joblib",
     "./data/dog_rotate.joblib",
     "./data/dog_process.joblib",
+    "./data/dog_flip.joblib",
 ]
 
 output_dir = './data/extracted_1024dims_data'
+# output_dir = './data/extracted_4096dims_data'
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 

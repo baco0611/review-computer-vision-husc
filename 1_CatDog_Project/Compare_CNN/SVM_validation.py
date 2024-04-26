@@ -28,7 +28,8 @@ def process_data(cases):
     data = np.array(data)
     # labels = to_categorical(labels, num_classes=2)
     
-    return train_test_split(data, labels, test_size=0.3, random_state=42)
+    # return train_test_split(data, labels, test_size=0.3, random_state=42)
+    return data, labels
 
 
 # Hàm trộn dữ liệu từ nhiều folder
@@ -42,38 +43,6 @@ def mix_data(folders, label):
     images = np.array(images)
     images = images.squeeze()
     return images, [label] * len(images)
-
-def train_and_save_model(train_x, train_y, test_x, test_y, model_name):
-    print("Training model ...")
-    
-    # train_x = train_x.reshape(train_x.shape[0], -1)
-    # test_x = test_x.reshape(test_x.shape[0], -1)
-
-    model = svm.SVC(kernel='linear')  # Chọn kernel tùy ý (linear, rbf, ...)
-    model.fit(train_x, train_y)
-
-    joblib.dump(model, "./data/" + model_name + ".joblib")
-
-    evaluate_and_confusion_matrix(model, test_x, test_y, model_name)
-
-    return model
-
-# Hàm đánh giá mô hình và vẽ confusion matrix
-def evaluate_and_confusion_matrix(model, test_x, test_y, model_name):
-    test_predictions = model.predict(test_x)
-
-    
-    conf_matrix = confusion_matrix(test_y, test_predictions)
-    
-    plt.figure(figsize=(8, 6))
-    sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
-                xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"])
-    plt.xlabel('Predicted labels')
-    plt.ylabel('True labels')
-    plt.title('Confusion Matrix')
-    plt.savefig(f"./img/wSVM/{model_name}_confusion_matrix.png")
-    plt.close()
-
 
 data_folder = "extracted_4096dims_data"
 # data_folder = "extracted_1024dims_data"
@@ -92,32 +61,19 @@ dog_folders = [
     f"./data/{data_folder}/dog_process_features.joblib",
 ]
 
-#Lấy dữ liệu mong muốn
+model_name = "20240425_SVM_Full"
+name = "neg_4096"
+model = joblib.load(f"./data/{model_name}.joblib")
+
 # Hàm mix_data với hai tham số ([array of dataset], label)
-dog_regular_x, dog_regular_y = mix_data([dog_folders[4]], 1)
-cat_regular_x, cat_regular_y = mix_data([cat_folders[4]], 0)
+dog_regular_x, dog_regular_y = mix_data([dog_folders[1]], 1)
+cat_regular_x, cat_regular_y = mix_data([cat_folders[1]], 0)
 
-train_x, test_x, train_y, test_y = process_data([(cat_regular_x, cat_regular_y), (dog_regular_x, dog_regular_y)])
-print(len(train_x), len(test_x))
+data, labels = process_data([(cat_regular_x, cat_regular_y), (dog_regular_x, dog_regular_y)])
+print(len(data), len(labels))
 
-model_name = "20240426_SVM_4096"
-model = train_and_save_model(train_x, train_y, test_x, test_y, model_name)
-
-all_data = []
-all_data.extend(train_x)
-all_data.extend(test_x)
-all_data = np.array(all_data)
-
-all_labels = []
-all_labels.extend(train_y)
-all_labels.extend(test_y)
-all_labels = np.array(all_labels)
-
-print(type(all_data), len(all_data))
-print(type(all_labels), len(all_labels))
-
-predictions = model.predict(all_data)
-conf_matrix = confusion_matrix(all_labels, predictions)
+predictions = model.predict(data)
+conf_matrix = confusion_matrix(labels, predictions)
     
 plt.figure(figsize=(8, 6))
 sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
@@ -125,5 +81,5 @@ sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
 plt.xlabel('Predicted labels')
 plt.ylabel('True labels')
 plt.title('Confusion Matrix')
-plt.savefig(f"./img/wSVM/{model_name}.png")
+plt.savefig(f"./img/validation/{model_name}_{name}_confuse_matrix.png")
 plt.close()
