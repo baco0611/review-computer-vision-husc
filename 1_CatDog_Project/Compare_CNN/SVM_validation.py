@@ -44,14 +44,15 @@ def mix_data(folders, label):
     images = images.squeeze()
     return images, [label] * len(images)
 
-data_folder = "extracted_4096dims_data"
-# data_folder = "extracted_1024dims_data"
+# data_folder = "extracted_4096dims_data"
+data_folder = "extracted_1024dims_data"
 cat_folders = [
     f"./data/{data_folder}/cat_regular_features.joblib",
     f"./data/{data_folder}/cat_neg_features.joblib",
     f"./data/{data_folder}/cat_resize_features.joblib",
     f"./data/{data_folder}/cat_rotate_features.joblib",
     f"./data/{data_folder}/cat_process_features.joblib",
+    f"./data/{data_folder}/cat_flip_features.joblib",
 ]
 dog_folders = [
     f"./data/{data_folder}/dog_regular_features.joblib",
@@ -59,15 +60,16 @@ dog_folders = [
     f"./data/{data_folder}/dog_resize_features.joblib",
     f"./data/{data_folder}/dog_rotate_features.joblib",
     f"./data/{data_folder}/dog_process_features.joblib",
+    f"./data/{data_folder}/dog_flip_features.joblib",
 ]
 
-model_name = "20240425_SVM_Full"
-name = "neg_4096"
+model_name = "20240426_SVM_1024_Full"
+name = "process_1024"
 model = joblib.load(f"./data/{model_name}.joblib")
 
 # Hàm mix_data với hai tham số ([array of dataset], label)
-dog_regular_x, dog_regular_y = mix_data([dog_folders[1]], 1)
-cat_regular_x, cat_regular_y = mix_data([cat_folders[1]], 0)
+dog_regular_x, dog_regular_y = mix_data([dog_folders[0]], 1)
+cat_regular_x, cat_regular_y = mix_data([cat_folders[0]], 0)
 
 data, labels = process_data([(cat_regular_x, cat_regular_y), (dog_regular_x, dog_regular_y)])
 print(len(data), len(labels))
