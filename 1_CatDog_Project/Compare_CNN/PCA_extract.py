@@ -18,7 +18,8 @@ def apply_pca(data, PCA_dims):
     return pca
 
 # Define folder paths
-data_folder = "extracted_4096dims_data"
+# data_folder = "extracted_4096dims_data"
+data_folder = "extracted_1024dims_data"
 cat_folders = [
     f"./data/{data_folder}/cat_regular_features.joblib",
     f"./data/{data_folder}/cat_neg_features.joblib",
@@ -36,14 +37,12 @@ dog_folders = [
     f"./data/{data_folder}/dog_process_features.joblib",
 ]
 
-# Read and append data
 cat_data_original = read_and_append_data(cat_folders)
 dog_data_original = read_and_append_data(dog_folders)
 
-# Concatenate data
 all_data_original = concatenate_data(cat_data_original + dog_data_original)
 
-PCA_dims = 500
+PCA_dims = 100
 model_name = "20240501_PCA_" + str(PCA_dims)
 model = apply_pca(all_data_original, PCA_dims)
 joblib.dump(model, f"./data/{model_name}.joblib")
@@ -58,7 +57,7 @@ for folder, data in zip(cat_folders, cat_data_original):
     cnn_dims = folder_list[2].split("_")[1]
 
     result = model.fit_transform(data)
-    joblib.dump(result, f"./data/PCA/{PCA_dims}/{cnn_dims}_{name}.joblib")
+    joblib.dump(result, f"./data/PCA/{PCA_dims}/{cnn_dims}_{name}")
 
 for folder, data in zip(dog_folders, dog_data_original):
     folder_list = folder.split("/")
@@ -66,4 +65,4 @@ for folder, data in zip(dog_folders, dog_data_original):
     cnn_dims = folder_list[2].split("_")[1]
 
     result = model.fit_transform(data)
-    joblib.dump(result, f"./data/PCA/{PCA_dims}/{cnn_dims}_{name}.joblib")
+    joblib.dump(result, f"./data/PCA/{PCA_dims}/{cnn_dims}_{name}")
