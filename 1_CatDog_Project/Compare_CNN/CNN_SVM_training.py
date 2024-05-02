@@ -67,10 +67,12 @@ def evaluate_and_confusion_matrix(model, test_x, test_y, model_name):
     
     plt.figure(figsize=(8, 6))
     sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
-                xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"])
-    plt.xlabel('Predicted labels')
-    plt.ylabel('True labels')
-    plt.title('Confusion Matrix')
+                xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"], annot_kws={"size": 14})
+    plt.xlabel('Predicted labels', fontsize="14")
+    plt.ylabel('True labels', fontsize="14")
+    plt.title('Confusion Matrix', fontsize="14")
+    plt.xticks(fontsize="14")
+    plt.yticks(fontsize="14")
     plt.savefig(f"./img/wSVM/{model_name}_confusion_matrix.png")
     plt.close()
 
@@ -121,9 +123,11 @@ conf_matrix = confusion_matrix(all_labels, predictions)
     
 plt.figure(figsize=(8, 6))
 sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
-            xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"])
-plt.xlabel('Predicted labels')
-plt.ylabel('True labels')
-plt.title('Confusion Matrix')
+            xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"], annot_kws={"size": 14})
+plt.xlabel('Predicted labels', fontsize="14")
+plt.ylabel('True labels', fontsize="14")
+plt.title('Confusion Matrix', fontsize="14")
+plt.xticks(fontsize="14")
+plt.yticks(fontsize="14")
 plt.savefig(f"./img/wSVM/{model_name}.png")
 plt.close()
