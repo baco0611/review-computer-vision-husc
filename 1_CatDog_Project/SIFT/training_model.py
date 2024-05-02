@@ -62,10 +62,12 @@ conf_matrix = confusion_matrix(test_y, test_preds)
 # Vẽ confusion matrix
 plt.figure(figsize=(10, 8))
 sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
-            xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"])
-plt.xlabel('Predicted labels')
-plt.ylabel('True labels')
-plt.title('Confusion Matrix')
+            xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"], annot_kws={"size": 14})
+plt.xlabel('Predicted labels', fontsize="14")
+plt.ylabel('True labels', fontsize="14")
+plt.title('Confusion Matrix', fontsize="14")
+plt.xticks(fontsize="14")
+plt.yticks(fontsize="14")
 plt.savefig('./image/confusion_test_matrix.png')
 plt.show()
 
@@ -76,12 +78,13 @@ data_preds = model.predict(dataset)
 data_y = np.concatenate((train_y, test_y))
 conf_matrix = confusion_matrix(data_y, data_preds)
 plt.figure(figsize=(8, 6))
-sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", 
-            xticklabels=["Class 0", "Class 1"], yticklabels=["Class 0", "Class 1"])
-plt.xlabel('Predicted labels')
-plt.ylabel('True labels')
-plt.title('Confusion Matrix')
-plt.savefig('./image/confusion_matrix.png')
+sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
+            xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"], annot_kws={"size": 14})
+plt.xlabel('Predicted labels', fontsize="14")
+plt.ylabel('True labels', fontsize="14")
+plt.title('Confusion Matrix', fontsize="14")
+plt.xticks(fontsize="14")
+plt.yticks(fontsize="14")
 plt.show()
 
 
