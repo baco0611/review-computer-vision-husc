@@ -22,7 +22,7 @@ def process_data(cases):
         labels.extend(label)
 
     print(type(data))
-    print(data[0])
+    # print(data[0])
     print(len(labels))
 
     data = np.array(data)
@@ -73,25 +73,28 @@ def evaluate_and_confusion_matrix(model, test_x, test_y, model_name):
     plt.title('Confusion Matrix', fontsize="14")
     plt.xticks(fontsize="14")
     plt.yticks(fontsize="14")
-    plt.savefig(f"./img/wSVM/{model_name}_confusion_matrix.png")
+    plt.savefig(f"./img/PCA/{model_name}_confusion_matrix.png")
     plt.close()
 
 
 data_folder = "extracted_4096dims_data"
 # data_folder = "extracted_1024dims_data"
+PCA_dims = 200
+feature_dims = 4096
 cat_folders = [
-    f"./data/{data_folder}/cat_regular_features.joblib",
-    f"./data/{data_folder}/cat_neg_features.joblib",
-    f"./data/{data_folder}/cat_resize_features.joblib",
-    f"./data/{data_folder}/cat_rotate_features.joblib",
-    f"./data/{data_folder}/cat_process_features.joblib",
+    f"./data/PCA/{PCA_dims}/{feature_dims}dims_cat_regular_features.joblib",
+    f"./data/PCA/{PCA_dims}/{feature_dims}dims_cat_neg_features.joblib",
+    f"./data/PCA/{PCA_dims}/{feature_dims}dims_cat_resize_features.joblib",
+    f"./data/PCA/{PCA_dims}/{feature_dims}dims_cat_rotate_features.joblib",
+    f"./data/PCA/{PCA_dims}/{feature_dims}dims_cat_process_features.joblib",
 ]
+
 dog_folders = [
-    f"./data/{data_folder}/dog_regular_features.joblib",
-    f"./data/{data_folder}/dog_neg_features.joblib",
-    f"./data/{data_folder}/dog_resize_features.joblib",
-    f"./data/{data_folder}/dog_rotate_features.joblib",
-    f"./data/{data_folder}/dog_process_features.joblib",
+    f"./data/PCA/{PCA_dims}/{feature_dims}dims_dog_regular_features.joblib",
+    f"./data/PCA/{PCA_dims}/{feature_dims}dims_dog_neg_features.joblib",
+    f"./data/PCA/{PCA_dims}/{feature_dims}dims_dog_resize_features.joblib",
+    f"./data/PCA/{PCA_dims}/{feature_dims}dims_dog_rotate_features.joblib",
+    f"./data/PCA/{PCA_dims}/{feature_dims}dims_dog_process_features.joblib",
 ]
 
 #Lấy dữ liệu mong muốn
@@ -102,7 +105,7 @@ cat_regular_x, cat_regular_y = mix_data([cat_folders[4]], 0)
 train_x, test_x, train_y, test_y = process_data([(cat_regular_x, cat_regular_y), (dog_regular_x, dog_regular_y)])
 print(len(train_x), len(test_x))
 
-model_name = "20240426_SVM_4096"
+model_name = f"20250502_PCA_SVM_{PCA_dims}_{feature_dims}"
 model = train_and_save_model(train_x, train_y, test_x, test_y, model_name)
 
 all_data = []
@@ -129,5 +132,5 @@ plt.ylabel('True labels', fontsize="14")
 plt.title('Confusion Matrix', fontsize="14")
 plt.xticks(fontsize="14")
 plt.yticks(fontsize="14")
-plt.savefig(f"./img/wSVM/{model_name}.png")
+plt.savefig(f"./img/PCA/{model_name}.png")
 plt.close()
