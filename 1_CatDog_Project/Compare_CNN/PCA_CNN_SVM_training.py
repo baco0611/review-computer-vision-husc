@@ -22,7 +22,7 @@ def process_data(cases):
         labels.extend(label)
 
     print(type(data))
-    print(data[0])
+    # print(data[0])
     print(len(labels))
 
     data = np.array(data)
@@ -67,18 +67,20 @@ def evaluate_and_confusion_matrix(model, test_x, test_y, model_name):
     
     plt.figure(figsize=(8, 6))
     sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
-                xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"])
-    plt.xlabel('Predicted labels')
-    plt.ylabel('True labels')
-    plt.title('Confusion Matrix')
+                xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"], annot_kws={"size": 14})
+    plt.xlabel('Predicted labels', fontsize="14")
+    plt.ylabel('True labels', fontsize="14")
+    plt.title('Confusion Matrix', fontsize="14")
+    plt.xticks(fontsize="14")
+    plt.yticks(fontsize="14")
     plt.savefig(f"./img/PCA/{model_name}_confusion_matrix.png")
     plt.close()
 
 
 data_folder = "extracted_4096dims_data"
 # data_folder = "extracted_1024dims_data"
-PCA_dims = 500
-feature_dims = 1024
+PCA_dims = 200
+feature_dims = 4096
 cat_folders = [
     f"./data/PCA/{PCA_dims}/{feature_dims}dims_cat_regular_features.joblib",
     f"./data/PCA/{PCA_dims}/{feature_dims}dims_cat_neg_features.joblib",
@@ -103,7 +105,7 @@ cat_regular_x, cat_regular_y = mix_data([cat_folders[4]], 0)
 train_x, test_x, train_y, test_y = process_data([(cat_regular_x, cat_regular_y), (dog_regular_x, dog_regular_y)])
 print(len(train_x), len(test_x))
 
-model_name = f"20240426_PCA_{PCA_dims}_{feature_dims}"
+model_name = f"20250502_PCA_SVM_{PCA_dims}_{feature_dims}"
 model = train_and_save_model(train_x, train_y, test_x, test_y, model_name)
 
 all_data = []
@@ -124,9 +126,11 @@ conf_matrix = confusion_matrix(all_labels, predictions)
     
 plt.figure(figsize=(8, 6))
 sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
-            xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"])
-plt.xlabel('Predicted labels')
-plt.ylabel('True labels')
-plt.title('Confusion Matrix')
+            xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"], annot_kws={"size": 14})
+plt.xlabel('Predicted labels', fontsize="14")
+plt.ylabel('True labels', fontsize="14")
+plt.title('Confusion Matrix', fontsize="14")
+plt.xticks(fontsize="14")
+plt.yticks(fontsize="14")
 plt.savefig(f"./img/PCA/{model_name}.png")
 plt.close()
