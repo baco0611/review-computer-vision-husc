@@ -77,7 +77,6 @@ def evaluate_and_confusion_matrix(model, test_x, test_y, model_name):
     plt.close()
 
 
-data_folder = "extracted_4096dims_data"
 # data_folder = "extracted_1024dims_data"
 PCA_dims = 200
 feature_dims = 4096
