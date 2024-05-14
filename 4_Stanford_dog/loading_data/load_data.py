@@ -3,6 +3,7 @@ import cv2
 import os
 from random import randint
 import numpy as np
+import csv
 
 
 def check_folder(destination_folder):
@@ -37,10 +38,19 @@ def process_data(source_folder, destination_folder):
     rotate_list = []
     label = []
 
+    label_name = []
+    dog_name = []
+
     for root, dirs, _ in os.walk(source_folder):
         for directory in dirs:
+            if folder_index == 21:
+                break
+            print(f"\nLoading on folder {directory}, {folder_index} ...")
+            
             check_and_create_subfolders(destination_folder, folder_index)
 
+            label_name.append(folder_index)
+            dog_name.append(directory.split("-")[-1])
 
             for _, _, files in os.walk(os.path.join(source_folder, directory)):
                 file_index = 1
@@ -99,7 +109,7 @@ def process_data(source_folder, destination_folder):
     print(len(negative_list))
     print(len(resize_list))
     print(len(rotate_list))
-    print(len(flip_folder))
+    print(len(flip_list))
     print(len(process))
     # Save processed image lists
     joblib.dump(raw_list, os.path.join(destination_folder, "data", "raw_image.joblib"))
@@ -107,8 +117,17 @@ def process_data(source_folder, destination_folder):
     joblib.dump(negative_list, os.path.join(destination_folder, "data", "negative_image.joblib"))
     joblib.dump(resize_list, os.path.join(destination_folder, "data", "resized_image.joblib"))
     joblib.dump(rotate_list, os.path.join(destination_folder, "data", "rotated_image.joblib"))
-    joblib.dump(process, os.path.join(destination_folder, "data", "process.joblib"))
+    joblib.dump(process, os.path.join(destination_folder, "data", "process_image.joblib"))
     joblib.dump(label, os.path.join(destination_folder, "data", "label.joblib"))
+
+    csv_file = os.path.join(destination_folder, "data", "label.csv")
+    with open(csv_file, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Label', 'Dog'])  # Viết tiêu đề cột
+
+        # Ghi từng cặp dữ liệu từ hai mảng vào file CSV
+        for label, dog in zip(label_name, dog_name):
+            writer.writerow([label, dog])
 
 
 # Đường dẫn của thư mục nguồn và thư mục đích
