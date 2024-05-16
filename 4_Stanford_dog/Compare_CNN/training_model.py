@@ -45,58 +45,58 @@ def mix_data(folders, label):
 def build_vgg11_model(input_shape=(224, 224, 3), num_classes=2):
 
     #VGG8
-    model = Sequential()
-    model.add(Input(shape=(224, 224, 3)))
-    model.add(Conv2D(filters=16, kernel_size=(3, 3), activation="relu", padding="same"))
-    model.add(MaxPool2D(pool_size=(2, 2)))
-
-    model.add(Conv2D(filters=32, kernel_size=(3, 3), activation="relu", padding="same"))
-    model.add(MaxPool2D(pool_size=(2, 2)))
-
-    model.add(Conv2D(filters=64, kernel_size=(3, 3), activation="relu", padding="same"))
-    model.add(MaxPool2D(pool_size=(2, 2)))
-
-    model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="same"))
-    model.add(MaxPool2D(pool_size=(2, 2)))
-
-    model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="same"))
-    model.add(MaxPool2D(pool_size=(2, 2)))
-
-    model.add(Flatten())
-    model.add(Dense(units=4096, activation="relu"))
-    model.add(Dropout(0.2))
-    model.add(Dense(units=1024, activation="relu"))
-    model.add(Dropout(0.2))
-    model.add(Dense(units=num_classes, activation="softmax"))
-
-
-    #VGG11
     # model = Sequential()
     # model.add(Input(shape=(224, 224, 3)))
+    # model.add(Conv2D(filters=16, kernel_size=(3, 3), activation="relu", padding="same"))
+    # model.add(MaxPool2D(pool_size=(2, 2)))
+
+    # model.add(Conv2D(filters=32, kernel_size=(3, 3), activation="relu", padding="same"))
+    # model.add(MaxPool2D(pool_size=(2, 2)))
+
     # model.add(Conv2D(filters=64, kernel_size=(3, 3), activation="relu", padding="same"))
     # model.add(MaxPool2D(pool_size=(2, 2)))
 
     # model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="same"))
     # model.add(MaxPool2D(pool_size=(2, 2)))
 
-    # model.add(Conv2D(filters=256, kernel_size=(3, 3), activation="relu", padding="same"))
-    # model.add(Conv2D(filters=256, kernel_size=(3, 3), activation="relu", padding="same"))
-    # model.add(MaxPool2D(pool_size=(2, 2)))
-
-    # model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
-    # model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
-    # model.add(MaxPool2D(pool_size=(2, 2)))
-
-    # model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
-    # model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+    # model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="same"))
     # model.add(MaxPool2D(pool_size=(2, 2)))
 
     # model.add(Flatten())
     # model.add(Dense(units=4096, activation="relu"))
     # model.add(Dropout(0.2))
-    # model.add(Dense(units=4096, activation="relu"))
+    # model.add(Dense(units=1024, activation="relu"))
     # model.add(Dropout(0.2))
-    # model.add(Dense(units=2, activation="softmax"))
+    # model.add(Dense(units=num_classes, activation="softmax"))
+
+
+    #VGG11
+    model = Sequential()
+    model.add(Input(shape=(224, 224, 3)))
+    model.add(Conv2D(filters=64, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(MaxPool2D(pool_size=(2, 2)))
+
+    model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(MaxPool2D(pool_size=(2, 2)))
+
+    model.add(Conv2D(filters=256, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(Conv2D(filters=256, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(MaxPool2D(pool_size=(2, 2)))
+
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(MaxPool2D(pool_size=(2, 2)))
+
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(MaxPool2D(pool_size=(2, 2)))
+
+    model.add(Flatten())
+    model.add(Dense(units=4096, activation="relu"))
+    model.add(Dropout(0.2))
+    model.add(Dense(units=4096, activation="relu"))
+    model.add(Dropout(0.2))
+    model.add(Dense(units=num_classes, activation="softmax"))
 
     model.summary()
     return model
@@ -163,10 +163,10 @@ folders = [
 
 # Lấy dữ liệu mong muốn
 # Hàm mix_data với hai tham số ([array of dataset], label)
-data = joblib.load(folders[0])
+data = joblib.load(folders[4])
 labels = joblib.load("../dataset/data/label.joblib")
 process_labels = labels * 5
-# labels = process_labels
+labels = process_labels
 labels = [x - 1 for x in labels]
 size = len(set(labels))
 
@@ -174,7 +174,7 @@ train_x, test_x, train_y, test_y = process_data([(data, labels)], size)
 print(len(train_x), len(test_x))
 print(type(train_x), type(test_x))
 
-model_name = "20240425_VGG8_raw_1"
+model_name = "20240515_VGG11_process_1"
 num_of_epoch = 30
 train_and_save_model(train_x, train_y, test_x, test_y, model_name, epochs=num_of_epoch, unit = size)
 model = load_model("./data/" + model_name + "_CNN_model.h5")
@@ -205,7 +205,7 @@ accuracy = accuracy_score(true_labels, predicted_labels)
 print("Model accuracy: ", accuracy)
 
 # Vẽ và hiển thị confusion matrix
-plt.figure(figsize=(8, 6))
+plt.figure(figsize=(15, 12))
 sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", annot_kws={"size": 14})
 plt.xlabel('Predicted labels', fontsize="14")
 plt.ylabel('True labels', fontsize="14")
