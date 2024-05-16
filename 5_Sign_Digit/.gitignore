@@ -1,0 +1,7 @@
+*.npz
+*.tar
+*.tar.gz
+*.joblib
+*.zip
+*jpg
+*.h5
