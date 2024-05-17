@@ -12,6 +12,7 @@ from sklearn.metrics import confusion_matrix
 import seaborn as sns
 from Processing_function import resize_list_image
 import tensorflow as tf
+import gc
 
 # Hàm tải dữ liệu
 def load_data_from_folder(folder_path):
@@ -107,9 +108,11 @@ def train_and_save_model(train_x, train_y, test_x, test_y, model_name, epochs=30
     model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=["accuracy"])
     history = model.fit(train_x, train_y, batch_size=8, epochs=epochs)
     
-    model.save(f"./data/{model_name}_CNN_model.h5")
-    
     plot_history(history, model_name)
+    model.save(f"./data/{model_name}_CNN_model.h5")
+    del train_x, train_y, history  # Giải phóng bộ nhớ sau khi huấn luyện và đánh giá
+    gc.collect()
+    tf.keras.backend.clear_session()
     
     evaluate_and_confusion_matrix(model, test_x, test_y, model_name)
 
@@ -135,7 +138,21 @@ def plot_history(history, model_name):
 
 # Hàm đánh giá mô hình và vẽ confusion matrix
 def evaluate_and_confusion_matrix(model, test_x, test_y, model_name):
-    test_predictions = model.predict(test_x)
+
+    dataset = tf.data.Dataset.from_tensor_slices(test_x).batch(1000)
+
+    gc.collect()
+
+    # Dự đoán theo batch sử dụng dataset
+    predictions = []
+    for batch_data in dataset:
+        batch_predictions = model.predict(batch_data)
+        predictions.extend(batch_predictions)
+
+    test_predictions = predictions
+
+    # predictions = np.array(predictions)
+    # test_predictions = model.predict(test_x)
     test_predictions_labels = np.argmax(test_predictions, axis=1)
     test_true_labels = np.argmax(test_y, axis=1)
     
@@ -154,6 +171,10 @@ def evaluate_and_confusion_matrix(model, test_x, test_y, model_name):
     plt.savefig(f"./img/{model_name}_confusion_matrix.png")
     plt.close()
     
+    del dataset, batch_data, predictions, test_predictions, test_predictions_labels, test_true_labels  # Giải phóng bộ nhớ sau khi dự đoán và đánh giá
+    gc.collect()
+    tf.keras.backend.clear_session()
+
 folders = [
     "../dataset/data/raw_image.joblib",
     "../dataset/data/negative_image.joblib",
@@ -175,7 +196,10 @@ train_x, test_x, train_y, test_y = process_data([(data, labels)], size)
 print(len(train_x), len(test_x))
 print(type(train_x), type(test_x))
 
-model_name = "20240516_VGG8_process"
+del data, labels, process_labels
+gc.collect()
+
+model_name = "20240517_VGG8_process_1"
 num_of_epoch = 30
 train_and_save_model(train_x, train_y, test_x, test_y, model_name, epochs=num_of_epoch, unit = size)
 model = load_model("./data/" + model_name + "_CNN_model.h5")
@@ -183,19 +207,34 @@ model = load_model("./data/" + model_name + "_CNN_model.h5")
 all_data = []
 all_data.extend(train_x)
 all_data.extend(test_x)
-all_data = np.array(all_data)
+# all_data = np.array(all_data)
 
 all_labels = []
 all_labels.extend(train_y)
 all_labels.extend(test_y)
 all_labels = np.array(all_labels)
 
+del train_x
+gc.collect()
+del test_x
+gc.collect()
 print(type(all_data), len(all_data))
 print(type(all_labels), len(all_labels))
 
-# Nếu dữ liệu lớn có thể cần dùng `predict_generator` hoặc `predict_on_batch` để tiết kiệm bộ nhớ
-predictions = model.predict(all_data)
+# Nếu dữ liệu lớn có thể cần dùng `predict_generator` hoặc `predict_on_batch` để tiết kiệm bộ nhớ# Tạo dataset từ dữ liệu và chia thành batch
+batch_size = 1000
+dataset = tf.data.Dataset.from_tensor_slices(all_data).batch(batch_size)
 
+del all_data
+gc.collect()
+
+# Dự đoán theo batch sử dụng dataset
+predictions = []
+for batch_data in dataset:
+    batch_predictions = model.predict(batch_data)
+    predictions.extend(batch_predictions)
+
+predictions = np.array(predictions)
 # Chuyển đổi dự đoán và nhãn thực tế từ dạng one-hot về dạng chỉ số
 predicted_labels = np.argmax(predictions, axis=1)
 true_labels = np.argmax(all_labels, axis=1)
