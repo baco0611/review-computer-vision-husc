@@ -16,7 +16,7 @@ start_time = time.time()
 print("Loading data ...")
 size = 200
 name = "process"
-date = "20240516"
+date = "20240520"
 description = joblib.load(f'./data/{name}_description.joblib')
 codebook = joblib.load(f"./data/{date}_{name}_{size}_codebook.joblib")
 labels = joblib.load("../dataset/data/label.joblib")

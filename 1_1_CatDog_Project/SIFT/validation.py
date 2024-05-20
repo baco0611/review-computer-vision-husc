@@ -3,41 +3,42 @@ from convert_keypoint_tuple import *
 import time
 import joblib
 from bovw import *
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, accuracy_score
 import seaborn as sns
 import matplotlib.pyplot as plt
 
 print("Loading file ...")
 
-name = "Flip"
+size = 200
+name = "process"
+date = "20240520"
+valid_name = "negative"
+model_name = f"{date}_{name}_{size}"
 
-cat_dir = "../image/Cat" + name
-(cat_bgr, cat_gray) = load_images(cat_dir)
-(cat_keypoints, cat_description) = extract_visual_features(cat_gray)
+codebook = joblib.load(f"./data/{date}_{name}_{size}_codebook.joblib")
+labels = joblib.load("../dataset/data/label.joblib")
+model = joblib.load(f"./data/SVM_{model_name}_model.joblib")
 
-dog_dir = "../image/Dog" + name
-(dog_bgr, dog_gray) = load_images(dog_dir)
-(dog_keypoints, dog_description) = extract_visual_features(dog_gray)
+def validation(valid_name):
+    data = joblib.load(f"./data/{valid_name}_description.joblib")
 
-codebook = joblib.load("./data/codebook.joblib")
-model = joblib.load("./data/SVM_model.joblib")
+    data = [represent_image_features(x, codebook) for x in data]
 
-cat_data = [represent_image_features(x, codebook) for x in cat_description]
-dog_data = [represent_image_features(x, codebook) for x in dog_description]
+    y_pred = model.predict(data)
 
-data = cat_data + dog_data
-y = [0] * len(cat_data) + [1] * len(dog_data)
+    conf_matrix = confusion_matrix(labels, y_pred)
+    test_accuracy = accuracy_score(labels, y_pred)
+    print(f"{valid_name} Accuracy:", test_accuracy)
 
-y_pred = model.predict(data)
+    # Hiển thị ma trận nhầm lẫn bằng seaborn
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", 
+                xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"])
+    plt.xlabel('Predicted labels')
+    plt.ylabel('True labels')
+    plt.title('Confusion Matrix')
+    plt.savefig("./image/validation/" + valid_name + "_confuse_matrix.png")
+    # plt.show()
 
-conf_matrix = confusion_matrix(y, y_pred)
-
-# Hiển thị ma trận nhầm lẫn bằng seaborn
-plt.figure(figsize=(8, 6))
-sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", 
-            xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"])
-plt.xlabel('Predicted labels')
-plt.ylabel('True labels')
-plt.title('Confusion Matrix')
-plt.savefig("./image/validation/" + name + "_confuse_matrix.png")
-plt.show()
+for x in ["raw", "negative", "resized", "rotated", "flipped"]:
+    validation(x)

@@ -50,7 +50,7 @@ def represent_image_features(image_descriptors, codebook):
 # image_descriptors: a list of local features
 
     from scipy.cluster.vq import vq
-    
+
     # Map each descriptor to the nearest codebook entry
     img_visual_words, distance = vq(image_descriptors, codebook)
     
