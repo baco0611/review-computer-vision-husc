@@ -62,7 +62,7 @@ del labels
 gc.collect()
 
 # Load model
-model_name = "20240517_VGG8_process_1"
+model_name = "20240520_VGG8_process_2"
 model = load_model(f"./data/{model_name}_CNN_model.h5")
 
 # Load từng batch từ thư mục tạm để tính toán và dự đoán

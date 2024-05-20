@@ -199,8 +199,8 @@ print(type(train_x), type(test_x))
 del data, labels, process_labels
 gc.collect()
 
-model_name = "20240517_VGG8_process_1"
-num_of_epoch = 30
+model_name = "20240520_VGG8_process_2"
+num_of_epoch = 100
 train_and_save_model(train_x, train_y, test_x, test_y, model_name, epochs=num_of_epoch, unit = size)
 model = load_model("./data/" + model_name + "_CNN_model.h5")
 

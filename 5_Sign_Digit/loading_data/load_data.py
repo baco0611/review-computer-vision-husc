@@ -67,14 +67,14 @@ def process_data(source_folder, destination_folder):
                     # Save to flip folder
                     flip_folder = os.path.join(destination_folder, "flip", str(folder_index))
                     flipped_image = cv2.flip(image, 1)
-                    flip_image_path = os.path.join(flip_folder, f"{folder_index}.jpg")
+                    flip_image_path = os.path.join(flip_folder, f"{file_index}.jpg")
                     cv2.imwrite(flip_image_path, flipped_image)
                     flip_list.append(flipped_image)
 
                     # Save to negative folder
                     negative_folder = os.path.join(destination_folder, "negative", str(folder_index))
                     negative_image = cv2.bitwise_not(image)
-                    negative_image_path = os.path.join(negative_folder, f"{folder_index}.jpg")
+                    negative_image_path = os.path.join(negative_folder, f"{file_index}.jpg")
                     cv2.imwrite(negative_image_path, negative_image)
                     negative_list.append(negative_image)
 
@@ -83,7 +83,7 @@ def process_data(source_folder, destination_folder):
                     scale_factor_x = np.random.uniform(0.5, 1.5)
                     scale_factor_y = np.random.uniform(0.5, 1.5)
                     resized_image = cv2.resize(image, None, fx=scale_factor_x, fy=scale_factor_y)
-                    resize_image_path = os.path.join(resize_folder, f"{folder_index}.jpg")
+                    resize_image_path = os.path.join(resize_folder, f"{file_index}.jpg")
                     cv2.imwrite(resize_image_path, resized_image)
                     resize_list.append(resized_image)
 
@@ -93,7 +93,7 @@ def process_data(source_folder, destination_folder):
                     rows, cols = image.shape[:2]
                     rotation_matrix = cv2.getRotationMatrix2D((cols / 2, rows / 2), angle, 1)
                     rotated_image = cv2.warpAffine(image, rotation_matrix, (cols, rows))
-                    rotate_image_path = os.path.join(rotate_folder, f"{folder_index}.jpg")
+                    rotate_image_path = os.path.join(rotate_folder, f"{file_index}.jpg")
                     cv2.imwrite(rotate_image_path, rotated_image)
                     rotate_list.append(rotated_image)
                     
@@ -112,13 +112,13 @@ def process_data(source_folder, destination_folder):
     print(len(flip_list))
     print(len(process))
     # Save processed image lists
-    joblib.dump(raw_list, os.path.join(destination_folder, "data", "raw_image.joblib"))
-    joblib.dump(flip_list, os.path.join(destination_folder, "data", "flipped_image.joblib"))
-    joblib.dump(negative_list, os.path.join(destination_folder, "data", "negative_image.joblib"))
-    joblib.dump(resize_list, os.path.join(destination_folder, "data", "resized_image.joblib"))
-    joblib.dump(rotate_list, os.path.join(destination_folder, "data", "rotated_image.joblib"))
-    joblib.dump(process, os.path.join(destination_folder, "data", "process_image.joblib"))
-    joblib.dump(label, os.path.join(destination_folder, "data", "label.joblib"))
+    # joblib.dump(raw_list, os.path.join(destination_folder, "data", "raw_image.joblib"))
+    # joblib.dump(flip_list, os.path.join(destination_folder, "data", "flipped_image.joblib"))
+    # joblib.dump(negative_list, os.path.join(destination_folder, "data", "negative_image.joblib"))
+    # joblib.dump(resize_list, os.path.join(destination_folder, "data", "resized_image.joblib"))
+    # joblib.dump(rotate_list, os.path.join(destination_folder, "data", "rotated_image.joblib"))
+    # joblib.dump(process, os.path.join(destination_folder, "data", "process_image.joblib"))
+    # joblib.dump(label, os.path.join(destination_folder, "data", "label.joblib"))
 
 
 # Đường dẫn của thư mục nguồn và thư mục đích
