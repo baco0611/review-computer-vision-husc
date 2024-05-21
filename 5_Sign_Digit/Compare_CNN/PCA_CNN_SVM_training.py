@@ -64,10 +64,11 @@ def evaluate_and_confusion_matrix(model, test_x, test_y, model_name):
 
     
     conf_matrix = confusion_matrix(test_y, test_predictions)
+    accuracy = accuracy_score(test_y, test_predictions)
+    print("Model Accuracy:", accuracy)
     
-    plt.figure(figsize=(8, 6))
-    sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
-                xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"], annot_kws={"size": 14})
+    plt.figure(figsize=(15, 12))
+    sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", annot_kws={"size": 20})
     plt.xlabel('Predicted labels', fontsize="14")
     plt.ylabel('True labels', fontsize="14")
     plt.title('Confusion Matrix', fontsize="14")
@@ -78,33 +79,35 @@ def evaluate_and_confusion_matrix(model, test_x, test_y, model_name):
 
 
 # data_folder = "extracted_1024dims_data"
-PCA_dims = 200
+PCA_dims = 500
 feature_dims = 4096
-cat_folders = [
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_cat_regular_features.joblib",
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_cat_neg_features.joblib",
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_cat_resize_features.joblib",
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_cat_rotate_features.joblib",
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_cat_process_features.joblib",
-]
+date = "20240521"
+model_name = f"{date}_SVM_{feature_dims}_{PCA_dims}"
 
-dog_folders = [
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_dog_regular_features.joblib",
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_dog_neg_features.joblib",
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_dog_resize_features.joblib",
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_dog_rotate_features.joblib",
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_dog_process_features.joblib",
+print(PCA_dims, feature_dims)
+
+folders = [
+    f"./data/PCA/{PCA_dims}/{feature_dims}dims_raw_image_features.joblib",
+    f"./data/PCA/{PCA_dims}/{feature_dims}dims_negative_image_features.joblib",
+    f"./data/PCA/{PCA_dims}/{feature_dims}dims_resized_image_features.joblib",
+    f"./data/PCA/{PCA_dims}/{feature_dims}dims_rotated_image_features.joblib",
+    f"./data/PCA/{PCA_dims}/{feature_dims}dims_process_image_features.joblib",
 ]
 
 #Lấy dữ liệu mong muốn
 # Hàm mix_data với hai tham số ([array of dataset], label)
-dog_regular_x, dog_regular_y = mix_data([dog_folders[4]], 1)
-cat_regular_x, cat_regular_y = mix_data([cat_folders[4]], 0)
+data = joblib.load(folders[4])
+labels = joblib.load("../dataset/data/label.joblib")
+process_labels = labels * 5
+labels = process_labels
+labels = [x for x in labels]
+size = len(set(labels))
+print(len(data))
 
-train_x, test_x, train_y, test_y = process_data([(cat_regular_x, cat_regular_y), (dog_regular_x, dog_regular_y)])
+train_x, test_x, train_y, test_y = process_data([(data, labels)])
 print(len(train_x), len(test_x))
+print(type(train_x), type(test_x))
 
-model_name = f"20250502_PCA_SVM_{PCA_dims}_{feature_dims}"
 model = train_and_save_model(train_x, train_y, test_x, test_y, model_name)
 
 all_data = []
@@ -122,10 +125,11 @@ print(type(all_labels), len(all_labels))
 
 predictions = model.predict(all_data)
 conf_matrix = confusion_matrix(all_labels, predictions)
+accuracy = accuracy_score(all_labels, predictions)
+print("Model Accuracy:", accuracy)
     
-plt.figure(figsize=(8, 6))
-sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
-            xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"], annot_kws={"size": 14})
+plt.figure(figsize=(15, 12))
+sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", annot_kws={"size": 20})
 plt.xlabel('Predicted labels', fontsize="14")
 plt.ylabel('True labels', fontsize="14")
 plt.title('Confusion Matrix', fontsize="14")

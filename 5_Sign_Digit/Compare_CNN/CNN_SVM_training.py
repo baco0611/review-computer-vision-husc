@@ -78,7 +78,7 @@ def evaluate_and_confusion_matrix(model, test_x, test_y, model_name):
     plt.close()
 
 
-feature_dims = 4096
+feature_dims = 1024
 data_folder = f"extracted_{feature_dims}dims_data"
 date = "20240521"
 model_name = f"{date}_SVM_{feature_dims}"
