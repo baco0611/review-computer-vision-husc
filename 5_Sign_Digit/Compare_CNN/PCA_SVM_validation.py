@@ -46,7 +46,6 @@ def mix_data(folders, label):
     return images, [label] * len(images)
 
 
-labels = joblib.load("../dataset/data/label.joblib")
 
 def validate(PCA_dims, feature_dims, name, model, index):
     print(PCA_dims, feature_dims, name)
@@ -56,23 +55,30 @@ def validate(PCA_dims, feature_dims, name, model, index):
         f"./data/PCA/{PCA_dims}/{feature_dims}dims_negative_image_features.joblib",
         f"./data/PCA/{PCA_dims}/{feature_dims}dims_resized_image_features.joblib",
         f"./data/PCA/{PCA_dims}/{feature_dims}dims_rotated_image_features.joblib",
+        f"./data/PCA/{PCA_dims}/{feature_dims}dims_flipped_image_features.joblib",
         f"./data/PCA/{PCA_dims}/{feature_dims}dims_process_image_features.joblib",
     ]
 
+    labels = joblib.load("../dataset/data/label.joblib")
+    new_labels = labels
     data = joblib.load(folders[index])
-    print(len(data))
+    print(len(data), len(new_labels))
+    if index == 5:
+        print(index)
+        new_labels *= 5
 
     predictions = model.predict(data)
-    conf_matrix = confusion_matrix(labels, predictions)
-    accuracy = accuracy_score(labels, predictions)
+    conf_matrix = confusion_matrix(new_labels, predictions)
+    accuracy = accuracy_score(new_labels, predictions)
     print(f"{name} Accuracy:", accuracy)
         
-    plt.figure(figsize=(8, 6))
-    sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
-                xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"])
-    plt.xlabel('Predicted labels')
-    plt.ylabel('True labels')
-    plt.title('Confusion Matrix')
+    plt.figure(figsize=(15, 12))
+    sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", annot_kws={"size": 20})
+    plt.xlabel('Predicted labels', fontsize="14")
+    plt.ylabel('True labels', fontsize="14")
+    plt.title('Confusion Matrix', fontsize="14")
+    plt.xticks(fontsize="14")
+    plt.yticks(fontsize="14")
     plt.savefig(f"./img/validation/PCA/{model_name}_{name}_confuse_matrix.png")
     plt.close()
 
@@ -83,6 +89,6 @@ for x in range(200, 600, 100):
     model_name = f"{date}_SVM_{feature_dims}_{x}"
     model = joblib.load("./data/" + model_name + ".joblib")
     i = 0
-    for y in ["raw", "negative", "resized", "rotated", "flipped"]:
+    for y in ["raw", "negative", "resized", "rotated", "flipped", "process"]:
         validate(x, feature_dims, y, model, i)
         i+=1

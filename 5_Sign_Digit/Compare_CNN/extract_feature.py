@@ -44,7 +44,7 @@ def extract_feature(folders):
     data = processing_data(folders)
     temp_dir = "./temp_batches"
     os.makedirs(temp_dir, exist_ok=True)
-    batch_size = 32
+    batch_size = 5000
 
     num_batches = len(data) // batch_size + (1 if len(data) % batch_size != 0 else 0)
     for i in range(num_batches):
@@ -82,20 +82,55 @@ folders = [
     "../dataset/data/raw_image.joblib",
     "../dataset/data/negative_image.joblib",
     "../dataset/data/resized_image.joblib",
-    "../dataset/data/rotated_image.joblib",
-    "../dataset/data/flipped_image.joblib",
-    "../dataset/data/process_image.joblib",
+    # "../dataset/data/rotated_image.joblib",
+    # "../dataset/data/flipped_image.joblib",
+    # "../dataset/data/process_image.joblib",
 ]
 
-output_dir = './data/extracted_1024dims_data'
+dims = 1024
+output_dir = f'./data/extracted_{dims}dims_data'
 # output_dir = './data/extracted_4096dims_data'
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
+# list_feature = np.empty((0, dims))
 # Duyệt qua từng file joblib của mèo, thực hiện extract và lưu kết quả
 for folder in folders:
     features = extract_feature([folder])
     filename, _ = os.path.splitext(os.path.basename(folder))
-    output_path = os.path.join(output_dir, filename + '_features.joblib')
+    output_path = os.path.join(output_dir, filename + '_features_1.joblib')
     joblib.dump(features, output_path)
     print(f"Saved features for {folder} to {output_path}")
+
+
+list_feature = []
+for folder in folders:
+    filename, _ = os.path.splitext(os.path.basename(folder))
+    output_path = os.path.join(output_dir, filename + '_features_1.joblib')
+    image = joblib.load(output_path)
+    list_feature += list(image)
+
+folder = "../dataset/data/process_image.joblib"
+filename, _ = os.path.splitext(os.path.basename(folder))
+output_path = os.path.join(output_dir, filename + '_features_1.joblib')
+joblib.dump(features, output_path)
+
+
+folder1 = "../dataset/data/process_image.joblib"
+filename1, _ = os.path.splitext(os.path.basename(folder1))
+output_path1 = os.path.join(output_dir, filename1 + '_features_1.joblib')
+data1 = joblib.load(output_path1)
+
+folder2 = "../dataset/data/raw_image.joblib"
+filename2, _ = os.path.splitext(os.path.basename(folder2))
+output_path2 = os.path.join(output_dir, filename2 + '_features_1.joblib')
+data2 = joblib.load(output_path2)
+
+diff = 0
+for i in range(len(data2)):
+    if not np.array_equal(data1[i], data2[i]):
+        diff+=1  
+        print(i, end="\t")
+
+print()
+print(diff)
