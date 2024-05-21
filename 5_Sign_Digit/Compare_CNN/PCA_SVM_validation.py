@@ -46,45 +46,49 @@ def mix_data(folders, label):
     return images, [label] * len(images)
 
 
-PCA_dims = 200
-feature_dims = 4096
-cat_folders = [
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_cat_regular_features.joblib",
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_cat_neg_features.joblib",
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_cat_resize_features.joblib",
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_cat_rotate_features.joblib",
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_cat_process_features.joblib",
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_cat_flip_features.joblib",
-]
 
-dog_folders = [
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_dog_regular_features.joblib",
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_dog_neg_features.joblib",
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_dog_resize_features.joblib",
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_dog_rotate_features.joblib",
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_dog_process_features.joblib",
-    f"./data/PCA/{PCA_dims}/{feature_dims}dims_dog_flip_features.joblib",
-]
+def validate(PCA_dims, feature_dims, name, model, index):
+    print(PCA_dims, feature_dims, name)
 
-model_name = f"20250502_PCA_SVM_{PCA_dims}_{feature_dims}"
-name = "flip"
-model = joblib.load(f"./data/{model_name}.joblib")
+    folders = [
+        f"./data/PCA/{PCA_dims}/{feature_dims}dims_raw_image_features.joblib",
+        f"./data/PCA/{PCA_dims}/{feature_dims}dims_negative_image_features.joblib",
+        f"./data/PCA/{PCA_dims}/{feature_dims}dims_resized_image_features.joblib",
+        f"./data/PCA/{PCA_dims}/{feature_dims}dims_rotated_image_features.joblib",
+        f"./data/PCA/{PCA_dims}/{feature_dims}dims_flipped_image_features.joblib",
+        f"./data/PCA/{PCA_dims}/{feature_dims}dims_process_image_features.joblib",
+    ]
 
-# Hàm mix_data với hai tham số ([array of dataset], label)
-dog_regular_x, dog_regular_y = mix_data([dog_folders[5]], 1)
-cat_regular_x, cat_regular_y = mix_data([cat_folders[5]], 0)
+    labels = joblib.load("../dataset/data/label.joblib")
+    new_labels = labels
+    data = joblib.load(folders[index])
+    print(len(data), len(new_labels))
+    if index == 5:
+        print(index)
+        new_labels *= 5
 
-data, labels = process_data([(cat_regular_x, cat_regular_y), (dog_regular_x, dog_regular_y)])
-print(len(data), len(labels))
+    predictions = model.predict(data)
+    conf_matrix = confusion_matrix(new_labels, predictions)
+    accuracy = accuracy_score(new_labels, predictions)
+    print(f"{name} Accuracy:", accuracy)
+        
+    plt.figure(figsize=(15, 12))
+    sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", annot_kws={"size": 20})
+    plt.xlabel('Predicted labels', fontsize="14")
+    plt.ylabel('True labels', fontsize="14")
+    plt.title('Confusion Matrix', fontsize="14")
+    plt.xticks(fontsize="14")
+    plt.yticks(fontsize="14")
+    plt.savefig(f"./img/validation/PCA/{model_name}_{name}_confuse_matrix.png")
+    plt.close()
 
-predictions = model.predict(data)
-conf_matrix = confusion_matrix(labels, predictions)
-    
-plt.figure(figsize=(8, 6))
-sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
-            xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"])
-plt.xlabel('Predicted labels')
-plt.ylabel('True labels')
-plt.title('Confusion Matrix')
-plt.savefig(f"./img/validation/PCA/{model_name}_{name}_confuse_matrix.png")
-plt.close()
+date = "20240521"
+feature_dims = 1024
+
+for x in range(200, 600, 100):
+    model_name = f"{date}_SVM_{feature_dims}_{x}"
+    model = joblib.load("./data/" + model_name + ".joblib")
+    i = 0
+    for y in ["raw", "negative", "resized", "rotated", "flipped", "process"]:
+        validate(x, feature_dims, y, model, i)
+        i+=1

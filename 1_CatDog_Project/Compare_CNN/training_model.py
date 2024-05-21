@@ -70,32 +70,32 @@ def build_vgg11_model(input_shape=(224, 224, 3), num_classes=2):
 
 
     #VGG11
-    # model = Sequential()
-    # model.add(Input(shape=(224, 224, 3)))
-    # model.add(Conv2D(filters=64, kernel_size=(3, 3), activation="relu", padding="same"))
-    # model.add(MaxPool2D(pool_size=(2, 2)))
+    model = Sequential()
+    model.add(Input(shape=(224, 224, 3)))
+    model.add(Conv2D(filters=64, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(MaxPool2D(pool_size=(2, 2)))
 
-    # model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="same"))
-    # model.add(MaxPool2D(pool_size=(2, 2)))
+    model.add(Conv2D(filters=128, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(MaxPool2D(pool_size=(2, 2)))
 
-    # model.add(Conv2D(filters=256, kernel_size=(3, 3), activation="relu", padding="same"))
-    # model.add(Conv2D(filters=256, kernel_size=(3, 3), activation="relu", padding="same"))
-    # model.add(MaxPool2D(pool_size=(2, 2)))
+    model.add(Conv2D(filters=256, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(Conv2D(filters=256, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(MaxPool2D(pool_size=(2, 2)))
 
-    # model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
-    # model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
-    # model.add(MaxPool2D(pool_size=(2, 2)))
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(MaxPool2D(pool_size=(2, 2)))
 
-    # model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
-    # model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
-    # model.add(MaxPool2D(pool_size=(2, 2)))
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(Conv2D(filters=512, kernel_size=(3, 3), activation="relu", padding="same"))
+    model.add(MaxPool2D(pool_size=(2, 2)))
 
-    # model.add(Flatten())
-    # model.add(Dense(units=4096, activation="relu"))
-    # model.add(Dropout(0.2))
-    # model.add(Dense(units=4096, activation="relu"))
-    # model.add(Dropout(0.2))
-    # model.add(Dense(units=2, activation="softmax"))
+    model.add(Flatten())
+    model.add(Dense(units=4096, activation="relu"))
+    model.add(Dropout(0.2))
+    model.add(Dense(units=4096, activation="relu"))
+    model.add(Dropout(0.2))
+    model.add(Dense(units=2, activation="softmax"))
 
     model.summary()
     return model
@@ -141,7 +141,7 @@ def evaluate_and_confusion_matrix(model, test_x, test_y, model_name):
     
     plt.figure(figsize=(8, 6))
     sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
-                xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"], annot_kws={"size": 14})
+                xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"], annot_kws={"size": 22})
     plt.xlabel('Predicted labels', fontsize="14")
     plt.ylabel('True labels', fontsize="14")
     plt.title('Confusion Matrix', fontsize="14")
@@ -167,13 +167,13 @@ dog_folders = [
 
 # Lấy dữ liệu mong muốn
 # Hàm mix_data với hai tham số ([array of dataset], label)
-cat_regular_x, cat_regular_y = mix_data([cat_folders[4]], 0)
-dog_regular_x, dog_regular_y = mix_data([dog_folders[4]], 1)
+cat_regular_x, cat_regular_y = mix_data([cat_folders[0]], 0)
+dog_regular_x, dog_regular_y = mix_data([dog_folders[0]], 1)
 
 train_x, test_x, train_y, test_y = process_data([(cat_regular_x, cat_regular_y), (dog_regular_x, dog_regular_y)])
 print(len(train_x), len(test_x))
 
-model_name = "20240425_VGG8_Full_2"
+model_name = "20240516_VGG11_raw_"
 num_of_epoch = 30
 train_and_save_model(train_x, train_y, test_x, test_y, model_name, epochs=num_of_epoch)
 model = load_model("./data/" + model_name + "_CNN_model.h5")
@@ -204,7 +204,7 @@ conf_matrix = confusion_matrix(true_labels, predicted_labels)
 # Vẽ và hiển thị confusion matrix
 plt.figure(figsize=(8, 6))
 sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
-            xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"], annot_kws={"size": 14})
+            xticklabels=["Cat", "Dog"], yticklabels=["Cat", "Dog"], annot_kws={"size": 22})
 plt.xlabel('Predicted labels', fontsize="14")
 plt.ylabel('True labels', fontsize="14")
 plt.title('Confusion Matrix', fontsize="14")
