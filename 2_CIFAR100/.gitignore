@@ -1,7 +1,0 @@
-*.npz
-*.tar
-*.tar.gz
-*.joblib
-cifar-10-batches-py/
-cifar-100-python/
-# dataset/
